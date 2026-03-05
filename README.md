@@ -45,7 +45,6 @@ Open `http://localhost:5173`.
 ### Contract Tests
 
 ```bash
-cd /Users/vicgunga/Downloads/stack
 npm install
 npm test
 ```
