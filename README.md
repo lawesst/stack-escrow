@@ -2,6 +2,12 @@
 
 StackEscrow is a Stacks testnet escrow MVP for milestone-based STX payments.
 
+## Deployed Testnet Contract
+
+- `Contract Address`: `ST2QCBMMQPNYVY2S0XYAAZ5P00V7FM8B0S6P4TKRQ`
+- `Contract Name`: `stack-escrow`
+- `Contract Identifier`: `ST2QCBMMQPNYVY2S0XYAAZ5P00V7FM8B0S6P4TKRQ.stack-escrow`
+
 ## Scope
 
 - Clarity smart contract for escrow lifecycle management.

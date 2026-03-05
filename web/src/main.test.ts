@@ -95,7 +95,9 @@ describe('StackEscrow UI (testnet)', () => {
   it('renders default UI with testnet selected', async () => {
     await bootApp();
 
-    expect(queryOrFail<HTMLHeadingElement>('h1').textContent).toContain('StackEscrow MVP');
+    expect(queryOrFail<HTMLHeadingElement>('h1').textContent).toContain('StackEscrow');
+    expect(queryOrFail<HTMLParagraphElement>('#project-description').textContent).toContain('milestone-based STX escrow');
+    expect(queryOrFail<HTMLImageElement>('#project-image').getAttribute('src')).toBe('/stackescrow-project-image.svg');
     expect(queryOrFail<HTMLSelectElement>('#network').value).toBe('testnet');
     expect(queryOrFail<HTMLInputElement>('#contract-name').value).toBe('stack-escrow');
   });

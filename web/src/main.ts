@@ -246,12 +246,29 @@ function render(): void {
   document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     <div class="shell">
       <header class="hero">
-        <span class="hero-kicker">Stacks Escrow Workflow</span>
-        <h1>StackEscrow MVP</h1>
-        <p>Milestone escrow dApp for Stacks Builder Rewards (March 2026).</p>
-        <div class="hero-chips">
-          <span class="chip">Contract: <strong>stack-escrow</strong></span>
-          <span class="chip">Target: <strong>testnet</strong></span>
+        <div class="hero-layout">
+          <div class="hero-copy">
+            <span class="hero-kicker">Stacks Escrow Workflow</span>
+            <h1>StackEscrow</h1>
+            <p id="project-description">
+              StackEscrow is a milestone-based STX escrow dApp on Stacks testnet for secure release,
+              refund, and dispute resolution.
+            </p>
+            <div class="hero-chips">
+              <span class="chip">Contract: <strong>stack-escrow</strong></span>
+              <span class="chip">Target: <strong>testnet</strong></span>
+            </div>
+          </div>
+          <figure class="hero-image-wrap">
+            <img
+              id="project-image"
+              class="hero-image"
+              src="/stackescrow-project-image.svg"
+              alt="StackEscrow smart contract escrow workflow illustration"
+              width="1200"
+              height="630"
+            />
+          </figure>
         </div>
       </header>
 
