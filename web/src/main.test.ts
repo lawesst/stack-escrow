@@ -1,15 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+const connectMock = vi.fn();
 const requestMock = vi.fn();
-const showConnectMock = vi.fn();
 const fetchCallReadOnlyFunctionMock = vi.fn();
 
 const CONTRACT_ADDRESS = 'ST2QCBMMQPNYVY2S0XYAAZ5P00V7FM8B0S6P4TKRQ';
 const WALLET_ADDRESS = 'STTESTWALLET1234567890';
 
 vi.mock('@stacks/connect', () => ({
+  connect: (...args: unknown[]) => connectMock(...args),
   request: (...args: unknown[]) => requestMock(...args),
-  showConnect: (...args: unknown[]) => showConnectMock(...args),
 }));
 
 vi.mock('@stacks/transactions', () => ({
@@ -86,8 +86,8 @@ async function bootApp(options: BootOptions = {}): Promise<void> {
 }
 
 beforeEach(() => {
+  connectMock.mockReset();
   requestMock.mockReset();
-  showConnectMock.mockReset();
   fetchCallReadOnlyFunctionMock.mockReset();
 });
 
@@ -122,62 +122,56 @@ describe('StackEscrow UI (testnet)', () => {
     expect(queryOrFail<HTMLSelectElement>('#network').value).toBe('mainnet');
   });
 
-  it('refreshes wallet address successfully', async () => {
-    requestMock.mockImplementation(async (method: string) => {
-      if (method === 'stx_getAddresses') {
-        return { addresses: [{ symbol: 'STX', address: WALLET_ADDRESS }] };
-      }
-      throw new Error(`Unexpected method: ${method}`);
-    });
-
+  it('renders connect-only wallet controls (no refresh button)', async () => {
     await bootApp();
-    await click('#refresh-wallet');
 
-    expect(byIdOrFail<HTMLElement>('wallet-address').textContent).toBe(WALLET_ADDRESS);
-    expect(statusText()).toContain('Wallet address refreshed');
-    expect(statusMode()).toBe('ok');
-    expect(requestMock).toHaveBeenCalledWith('stx_getAddresses', { network: 'testnet' });
-  });
-
-  it('shows refresh wallet error when provider request fails', async () => {
-    requestMock.mockRejectedValue(new Error('Failed to refresh wallet address'));
-
-    await bootApp();
-    await click('#refresh-wallet');
-
-    expect(statusText()).toContain('Failed to refresh wallet address');
-    expect(statusMode()).toBe('err');
+    expect(queryOrFail<HTMLButtonElement>('#connect-wallet').textContent).toContain('Connect Wallet');
+    expect(document.querySelector('#refresh-wallet')).toBeNull();
+    expect(byIdOrFail<HTMLElement>('wallet-address').textContent).toBe('Not connected');
   });
 
   it('connect-wallet flow sets connected status after onFinish', async () => {
-    requestMock.mockImplementation(async (method: string) => {
-      if (method === 'stx_getAddresses') {
-        return { addresses: [{ symbol: 'STX', address: WALLET_ADDRESS }] };
-      }
-      throw new Error(`Unexpected method: ${method}`);
-    });
-
-    showConnectMock.mockImplementation(async ({ onFinish }: { onFinish: () => Promise<void> }) => onFinish());
+    connectMock.mockResolvedValue({ addresses: [{ symbol: 'STX', address: WALLET_ADDRESS }] });
 
     await bootApp();
     await click('#connect-wallet');
 
-    expect(showConnectMock).toHaveBeenCalledTimes(1);
-    const args = showConnectMock.mock.calls[0][0] as { appDetails?: { name?: string }; redirectTo?: string };
-    expect(args.appDetails?.name).toBe('StackEscrow');
-    expect(args.redirectTo).toBe('/');
+    expect(connectMock).toHaveBeenCalledTimes(1);
+    const args = connectMock.mock.calls[0][0] as { network?: string };
+    expect(args.network).toBe('testnet');
+    expect(byIdOrFail<HTMLElement>('wallet-address').textContent).toBe(WALLET_ADDRESS);
     expect(statusText()).toContain('Wallet connected');
     expect(statusMode()).toBe('ok');
   });
 
   it('connect-wallet flow marks cancel as warning', async () => {
-    showConnectMock.mockImplementation(async ({ onCancel }: { onCancel: () => void }) => onCancel());
+    connectMock.mockRejectedValue(new Error('User canceled the request'));
 
     await bootApp();
     await click('#connect-wallet');
 
     expect(statusText()).toContain('Wallet connection cancelled');
     expect(statusMode()).toBe('warn');
+  });
+
+  it('connect-wallet flow surfaces wallet address fetch errors', async () => {
+    connectMock.mockRejectedValue(new Error('Unable to fetch wallet address'));
+
+    await bootApp();
+    await click('#connect-wallet');
+
+    expect(statusText()).toContain('Unable to fetch wallet address');
+    expect(statusMode()).toBe('err');
+  });
+
+  it('connect-wallet flow fails when provider returns no addresses', async () => {
+    connectMock.mockResolvedValue({ addresses: [] });
+
+    await bootApp();
+    await click('#connect-wallet');
+
+    expect(statusText()).toContain('Connected wallet returned no address');
+    expect(statusMode()).toBe('err');
   });
 
   it('create form rejects invalid STX amount format', async () => {
