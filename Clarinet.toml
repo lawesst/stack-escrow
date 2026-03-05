@@ -1,0 +1,11 @@
+[project]
+name = 'stack-escrow'
+description = 'Milestone escrow contract for freelancer/client payments on Stacks'
+authors = []
+telemetry = false
+cache_dir = './.cache'
+
+[contracts.stack-escrow]
+path = 'contracts/stack-escrow.clar'
+clarity_version = 2
+epoch = 'latest'

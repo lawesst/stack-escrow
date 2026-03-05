@@ -1,0 +1,17 @@
+id: 0
+name: Testnet deployment
+network: testnet
+stacks-node: https://api.testnet.hiro.so
+bitcoin-node: http://blockstack:blockstacksystem@bitcoind.testnet.stacks.co:18332
+plan:
+  batches:
+  - id: 0
+    transactions:
+    - transaction-type: contract-publish
+      contract-name: stack-escrow
+      expected-sender: ST2QCBMMQPNYVY2S0XYAAZ5P00V7FM8B0S6P4TKRQ
+      cost: 56990
+      path: contracts/stack-escrow.clar
+      anchor-block-only: true
+      clarity-version: 2
+    epoch: '3.3'

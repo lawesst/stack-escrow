@@ -1,0 +1,7 @@
+node_modules
+.cache
+lcov.info
+costs-reports.json
+web/node_modules
+web/dist
+.DS_Store

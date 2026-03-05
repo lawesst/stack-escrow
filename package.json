@@ -1,0 +1,23 @@
+{
+  "name": "stack-escrow-tests",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Clarinet test harness for StackEscrow",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:reports": "vitest run -- --coverage --costs"
+  },
+  "dependencies": {
+    "@scure/bip32": "^2.0.1",
+    "@scure/bip39": "^2.0.1",
+    "@stacks/clarinet-sdk": "^3.14.1",
+    "@stacks/transactions": "^7.3.1",
+    "vitest": "^4.0.9",
+    "vitest-environment-clarinet": "3.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1"
+  }
+}
