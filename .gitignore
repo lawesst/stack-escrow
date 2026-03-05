@@ -5,3 +5,4 @@ costs-reports.json
 web/node_modules
 web/dist
 .DS_Store
+TESTNET_TX_REPORT_*.md

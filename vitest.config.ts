@@ -3,6 +3,7 @@ import { getClarinetVitestsArgv, vitestSetupFilePath } from '@stacks/clarinet-sd
 
 export default defineConfig({
   test: {
+    include: ['tests/**/*.test.ts'],
     environment: 'clarinet',
     pool: 'forks',
     isolate: false,
